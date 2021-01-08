@@ -1,5 +1,6 @@
 import 'Info.dart';
 import 'Entrada.dart';
+import 'Register.dart';
 import 'InfoEntrada.dart';
 import 'package:flutter/material.dart';
 
@@ -64,6 +65,7 @@ class _UrnaState extends State<Urna> {
   List<dynamic> infos = List<dynamic>.empty(growable: true);
   List<Widget> entrada = List<Widget>.empty(growable: true);
   List<dynamic> infoEntrada = List<dynamic>.empty(growable: true);
+  List<Record> records = List<Record>.empty(growable: true);
 
   void insertInform(Inform info) {
     this.infos.add(info);
@@ -71,6 +73,16 @@ class _UrnaState extends State<Urna> {
 
   void insertEntrada(Widget entry) {
     this.entrada.add(entry);
+  }
+
+  void insertRecord(Record record) {
+    this.records.add(record);
+  }
+
+  void record(option) {
+    for (Record record in this.records) {
+      record.record(option, DateTime.now().microsecondsSinceEpoch / 1000);
+    }
   }
 
   void showData(String data) {
@@ -95,11 +107,11 @@ class _UrnaState extends State<Urna> {
         int index = this
             ._info["candidatos"]
             .indexWhere((element) => element["numero"] == result);
-
         if (index != -1) {
           setState(() {
             _state = "InformaEscolha";
             this._info["selecionado"][0] = this._info["candidatos"][index];
+            record(int.parse(this._info["selecionado"][0]["numero"]));
           });
         } else {
           setState(() {
@@ -112,20 +124,13 @@ class _UrnaState extends State<Urna> {
         _state = "Inicio";
       });
     }
-
-    for (Inform info in infos) {
-      info.showInfo();
-    }
-    for (Inform info in infoEntrada) {
-      info.showInfo();
-    }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void initHardware(hardware) {
     this.infos.clear();
     this.entrada.clear();
-    for (var hardware in widget.hardware) {
+    this.records.clear();
+    for (var hardware in hardware) {
       if (hardware['active']) {
         Inform info = informMapping(hardware['nome'], _info, _state);
         if (!(info is NullInform)) {
@@ -140,8 +145,25 @@ class _UrnaState extends State<Urna> {
         if (!(entradaInfo is NullInform)) {
           insertEntrada(entradaInfo);
         }
+        Record record = recordMapping(hardware['nome']);
+        if (!(record is NullRecord)) {
+          insertRecord(record);
+        }
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    initHardware(widget.hardware);
+
+    for (Inform info in infos) {
+      info.showInfo();
+    }
+    for (Inform info in infoEntrada) {
+      info.showInfo();
+    }
+
     return Container(
       width: 700,
       child: Row(

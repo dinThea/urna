@@ -16,6 +16,10 @@ Execute:
 flutter run -d chrome
 ```
 
+Você pode selecionar a função desejada no menu lateral, funções disponíveis: (Tela de Cristal, Touch Screen, Saída Fone, Armazenamento Interno, Auto-Falante)
+
+Aí é só utilizar normalmente!
+
 ## Discussão sobre os conceitos aprendidos na disciplina
 
 Aqui discutirei como cada conceito foi garantido na minha implementação e também as eventuais dificuldades enfrentadas para executar o projeto.

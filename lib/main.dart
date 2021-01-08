@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
     {'nome': 'Display Braille', 'active': false},
     {'nome': 'Saída Fone de Ouvido', 'active': false},
     {'nome': 'Teclado Físico', 'active': true},
-    {'nome': 'Touch Screen', 'active': false},
+    {'nome': 'Touch Screen', 'active': true},
     {'nome': 'Armazenamento Interno', 'active': false},
     {'nome': 'Impressora Térmica', 'active': false},
     {'nome': 'Internet', 'active': false},
