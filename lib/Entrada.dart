@@ -24,6 +24,7 @@ class _KeyboardWidgetState extends State<KeyboardWidget> implements Entrada {
   String buffer = "";
 
   sendInfo(data) {
+    print(data);
     widget.callback(data);
   }
 
@@ -35,9 +36,10 @@ class _KeyboardWidgetState extends State<KeyboardWidget> implements Entrada {
     if (letter != "OK" && letter != "X") {
       buffer += letter;
     } else if (letter == "OK") {
-      sendInfo(this.buffer);
+      sendInfo(buffer == "" ? "OK" : this.buffer);
       clearBuffer();
     } else if (letter == "X") {
+      sendInfo("X");
       clearBuffer();
     }
   }
@@ -52,6 +54,7 @@ class _KeyboardWidgetState extends State<KeyboardWidget> implements Entrada {
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
+                    onTap: () => {processLetter(number)},
                     child: Container(
                         color: Colors.grey[600],
                         width: 290 / 4 - 16,

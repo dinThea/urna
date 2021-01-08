@@ -4,7 +4,8 @@ import 'InfoEntrada.dart';
 import 'package:flutter/material.dart';
 
 class _UrnaState extends State<Urna> {
-  String _state = "Inicio"; // Inicio, SelecaoCandidato, InformaEscolha
+  String _state =
+      "Inicio"; // Inicio, SelecaoCandidato, InformaEscolha, CandidatoInvalido
   Map<String, List<Map<String, String>>> _info = {
     "candidatos": [
       {
@@ -49,6 +50,14 @@ class _UrnaState extends State<Urna> {
         "foto": "lulalindo.png",
         "numero": "13"
       }
+    ],
+    "selecionado": [
+      {
+        "texto": "Candidato do PT",
+        "nome": "Luis Inácio Lula da Silva",
+        "foto": "lulalindo.png",
+        "numero": "13"
+      }
     ]
   };
 
@@ -71,10 +80,46 @@ class _UrnaState extends State<Urna> {
   }
 
   void submit(String result) {
-    if (_state == "Inicio") {}
-  }
+    if (_state == "Inicio") {
+      if (result == "OK") {
+        setState(() {
+          _state = "SelecaoCandidato";
+        });
+      }
+    } else if (_state == "SelecaoCandidato") {
+      if (result == "X") {
+        setState(() {
+          _state = "Inicio";
+        });
+      } else if (result != "") {
+        int index = this
+            ._info["candidatos"]
+            .indexWhere((element) => element["numero"] == result);
 
-  Widget correctWidgetOrEmpty(String data) {}
+        if (index != -1) {
+          setState(() {
+            _state = "InformaEscolha";
+            this._info["selecionado"][0] = this._info["candidatos"][index];
+          });
+        } else {
+          setState(() {
+            _state = "CandidatoInvalido";
+          });
+        }
+      }
+    } else if (_state == "InformaEscolha" || _state == "CandidatoInvalido") {
+      setState(() {
+        _state = "Inicio";
+      });
+    }
+
+    for (Inform info in infos) {
+      info.showInfo();
+    }
+    for (Inform info in infoEntrada) {
+      info.showInfo();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +135,11 @@ class _UrnaState extends State<Urna> {
         if (!(entrada is NullEntrada)) {
           insertEntrada(entrada);
         }
+        Widget entradaInfo =
+            informEntradaMapping(hardware['nome'], _info, _state, submit);
+        if (!(entradaInfo is NullInform)) {
+          insertEntrada(entradaInfo);
+        }
       }
     }
     return Container(
@@ -98,7 +148,8 @@ class _UrnaState extends State<Urna> {
         children: [
           Row(children: [
             for (var info in infos) info,
-            for (var entry in entrada) entry
+            for (var entry in entrada) entry,
+            for (var infoentry in infoEntrada) infoentry
           ]),
           Container()
         ],
